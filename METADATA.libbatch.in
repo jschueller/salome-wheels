@@ -1,0 +1,20 @@
+Metadata-Version: 1.2
+Name: libbatch
+Version: @PACKAGE_VERSION@
+Summary:  Generic batch management library
+Home-page: https://github.com/SalomePlatform/libbatch
+Author: EDF R&D
+Author-email: eric.fayolle@edf.fr
+License: LGPL
+Keywords: batch
+Platform: any
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Intended Audience :: Science/Research
+
+
+Libbatch
+========

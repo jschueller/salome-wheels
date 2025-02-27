@@ -1,0 +1,18 @@
+diff --git a/src/KERNEL_PY/__init__.py b/src/KERNEL_PY/__init__.py
+index 801a6cbc4..8f697e691 100644
+--- a/src/KERNEL_PY/__init__.py
++++ b/src/KERNEL_PY/__init__.py
+@@ -116,6 +116,13 @@ def extend_path(pname):
+             __path__.append(subdir)
+ 
+ extend_path(ROOT_PYTHONPACKAGE_NAME)
++
++# ==========================================================================
++# the wheel should not require environment variables to be set
++# set it to the root dir of the wheel, where we copied the /share directory
++if not "KERNEL_ROOT_DIR" in os.environ:
++    wheel_root = os.path.dirname(os.path.dirname(__file__))
++    os.environ["KERNEL_ROOT_DIR"] = wheel_root
+ # ==========================================================================
+ #
+ 
