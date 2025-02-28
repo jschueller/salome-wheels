@@ -1,0 +1,32 @@
+diff --git a/python/omniidl_be/python.py b/python/omniidl_be/python.py
+index 3c88bcf..c84288e 100644
+--- a/python/omniidl_be/python.py
++++ b/python/omniidl_be/python.py
+@@ -2489,10 +2489,7 @@ def checkStubPackage(package):
+                 error_exit('Output error: "%s" exists and is not a file.' %
+                            initfile)
+         else:
+-            try:
+-                open(initfile, "w").write("# omniORB stub directory\n")
+-            except:
+-                error_exit('Cannot create "%s".' % initfile)
++            pass
+ 
+ 
+ def updateModules(modules, pymodule):
+diff --git a/python3/omniidl_be/python.py b/python3/omniidl_be/python.py
+index 3c88bcf..c84288e 100644
+--- a/python3/omniidl_be/python.py
++++ b/python3/omniidl_be/python.py
+@@ -2489,10 +2489,7 @@ def checkStubPackage(package):
+                 error_exit('Output error: "%s" exists and is not a file.' %
+                            initfile)
+         else:
+-            try:
+-                open(initfile, "w").write("# omniORB stub directory\n")
+-            except:
+-                error_exit('Cannot create "%s".' % initfile)
++            pass
+ 
+ 
+ def updateModules(modules, pymodule):

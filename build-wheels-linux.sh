@@ -16,231 +16,136 @@ SCRIPT=`readlink -f "$0"`
 SCRIPTPATH=`dirname "$SCRIPT"`
 export PATH=/opt/python/${PYTAG}-${ABI}/bin/:$PATH
 
-cd /tmp
-
-# omniorb
-# export OMNIORB_VERSION=4.2.5
-# curl -L https://downloads.sourceforge.net/omniorb/omniORB-${OMNIORB_VERSION}.tar.bz2|tar xj
-# cd omniORB*
-# ./configure --with-openssl=/usr
-# make
-# make install
-# make install DESTDIR=/tmp/install_omniorb
-# cd /tmp
-# curl -L https://downloads.sourceforge.net/omniorb/omniORBpy/omniORBpy-${OMNIORB_VERSION}/omniORBpy-${OMNIORB_VERSION}.tar.bz2|tar xj
-# cd omniORBpy*
-# ./configure --with-omniorb=/usr/local
-# make
-# make install
-# make install DESTDIR=/tmp/install_omniorb
-# cd /tmp/install_omniorb/usr/local/lib/python*/site-packages
-# find . -name __pycache__ | xargs rm -r
-# mkdir salome_omniorb-${OMNIORB_VERSION}.dist-info
-# sed "s|@PACKAGE_VERSION@|${OMNIORB_VERSION}|g" ${SCRIPTPATH}/METADATA.omniorb.in > salome_omniorb-${OMNIORB_VERSION}.dist-info/METADATA
-# cat salome_omniorb-${OMNIORB_VERSION}.dist-info/METADATA
-# python ${SCRIPTPATH}/write_distinfo.py salome_omniorb ${OMNIORB_VERSION} ${TAG}
-# zip -r salome_omniorb-${OMNIORB_VERSION}-${TAG}.whl *
-# auditwheel show salome_omniorb-${OMNIORB_VERSION}-${TAG}.whl
-# auditwheel repair salome_omniorb-${OMNIORB_VERSION}-${TAG}.whl -w /io/wheelhouse/
-
-# libbatch
-# export LIBBATCH_VERSION=2.5.0
-# git clone --depth 1 -b V`echo ${LIBBATCH_VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/libbatch.git
-# cd libbatch
-# sed -i "s|PYTHON_LIBRARIES|ZZZ|g" src/Python/CMakeLists.txt
-# cmake -LAH -DCMAKE_BUILD_TYPE=Release \
-#   -DPYTHON_EXECUTABLE=/opt/python/${PYTAG}-${ABI}/bin/python \
-#   -DPYTHON_INCLUDE_DIR=/opt/python/${PYTAG}-${ABI}/include/python${PYVERD} -DPYTHON_LIBRARY=dummy \
-#   -DLIBBATCH_CXX_STANDARD=17 \
-#   -B build .
-# cd build
-# make install
-# make install DESTDIR=$PWD/install
-# cd $PWD/install/usr/local/lib/python*/site-packages
-# rm -rf __pycache__
-# mkdir libbatch-${LIBBATCH_VERSION}.dist-info
-# sed "s|@PACKAGE_VERSION@|${LIBBATCH_VERSION}|g" ${SCRIPTPATH}/METADATA.libbatch.in > libbatch-${LIBBATCH_VERSION}.dist-info/METADATA
-# python ${SCRIPTPATH}/write_distinfo.py libbatch ${LIBBATCH_VERSION} ${TAG}
-# zip -r libbatch-${LIBBATCH_VERSION}-${TAG}.whl *.py *.so libbatch-${LIBBATCH_VERSION}.dist-info
-# auditwheel show libbatch-${LIBBATCH_VERSION}-${TAG}.whl
-# auditwheel repair libbatch-${LIBBATCH_VERSION}-${TAG}.whl -w /io/wheelhouse/
-
 # configuration
-git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/configuration.git
-# sed -i "s|NO_SYSTEM_ENVIRONMENT_PATH||g" configuration/cmake/SalomeMacros.cmake
-
-# install Engines.py into spdir instead spdir/salome (INSTALL_PYIDL_DIR)
-# sed -i "s|site-packages/salome|site-packages|g" configuration/cmake/UseOmniORB.cmake
+cd /tmp
+git clone --depth 1 -b agy/43708_pip_exp https://github.com/jschueller/configuration.git
 
 # kernel
+cd /tmp
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/salome
-pip install "numpy<2" "psutil<6"
-git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/kernel.git
+git clone --depth 1 -b jsr/43708_pip_exp https://github.com/jschueller/kernel.git
 cd kernel
-# patch -p1 -i ${SCRIPTPATH}/kernel_debug.patch
-patch -p1 -i ${SCRIPTPATH}/kernel_root_dir.patch
-git diff
-# exit 1
-
-# transitive link to libutil.so.1 for forkpty/openpty symbols as we link to static python
-grep -lr "PYTHON_LIBRARIES" . | xargs sed -i "s|\${PYTHON_LIBRARIES}|\${PYTHON_LIBRARIES} util|g"
-# sed -i 's|CACHE PATH "Install path: SALOME Python stuff"|CACHE STRING "Install path: SALOME Python stuff"|g' CMakeLists.txt 
-git diff
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
   -DSALOME_CMAKE_DEBUG=ON -DSALOME_USE_64BIT_IDS=ON \
-  -DSALOME_USE_LIBBATCH=ON -DSALOME_BUILD_TESTS=OFF -DSALOME_BUILD_DOC=OFF \
-  -DPYTHON_EXECUTABLE=/opt/python/${PYTAG}-${ABI}-static/bin/python \
-  -DPYTHON_INCLUDE_DIR=/opt/python/${PYTAG}-${ABI}-static/include/python${PYVERD} \
-  -DPYTHON_LIBRARY=/opt/python/${PYTAG}-${ABI}-static/lib/libpython${PYVERD}.a \
+  -DSALOME_USE_LIBBATCH=ON -DSALOME_BUILD_TESTS=ON -DSALOME_BUILD_DOC=OFF \
+  -DPYTHON_EXECUTABLE=/opt/python-static/${PYTAG}-${ABI}/bin/python \
+  -DPYTHON_INCLUDE_DIR=/opt/python-static/${PYTAG}-${ABI}/include/python${PYVERD} \
+  -DPYTHON_LIBRARY=/opt/python-static/${PYTAG}-${ABI}/lib/libpython${PYVERD}.a \
   -B build .
 cd build
 make install
-# 
-# export SALOME_VERBOSE=1
-# export SALOME_VERBOSE_LEVEL=2
-# export LD_LIBRARY_PATH=/usr/local/lib/:/usr/local/lib/salome
-# export PYTHONPATH=/usr/local/bin/salome/:/usr/local/lib/salome/:/usr/local/lib/python3.10/site-packages:/usr/local/lib/python3.10/site-packages/salome
-# export KERNEL_ROOT_DIR=/usr/local
-# python -c "import salome.kernel"
-# python -c "import salome"
-# python -c "import salome; salome.salome_init()"
-
-# exit 1
-make install DESTDIR=$PWD/install -j20
-
-cp -v $PWD/install/usr/local/lib/salome/_*.so $PWD/install/usr/local/lib/python*/site-packages
-cp -v $PWD/install/usr/local/bin/salome/*.py $PWD/install/usr/local/lib/python*/site-packages
-cp -rv $PWD/install/usr/local/share $PWD/install/usr/local/lib/python*/site-packages
+make install DESTDIR=$PWD/install
+# we need to copy /share for xml stuff, /bin for executables, the patched kernel/__init__.py set the corresponding env variables
+cp -rv $PWD/install/usr/local/{bin,share} $PWD/install/usr/local/lib/python*/site-packages/salome
 cd $PWD/install/usr/local/lib/python*/site-packages
 find . -name __pycache__ | xargs rm -r
 
-# drop the /salome top-level directory
-mv salome/salome _tmp
-mv salome/* .
-rmdir salome
-mv _tmp salome
-
-# mkdir salome_kernel-${VERSION}.dist-info
-# sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.kernel.in > salome_kernel-${VERSION}.dist-info/METADATA
-# python ${SCRIPTPATH}/write_distinfo.py salome_kernel ${VERSION} ${TAG}
-# zip -r salome_kernel-${VERSION}-${TAG}.whl *
-# auditwheel show salome_kernel-${VERSION}-${TAG}.whl
-# auditwheel repair salome_kernel-${VERSION}-${TAG}.whl -w /io/wheelhouse/
+mkdir salome.kernel-${VERSION}.dist-info
+sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.kernel.in > salome.kernel-${VERSION}.dist-info/METADATA
+python ${SCRIPTPATH}/write_distinfo.py salome.kernel ${VERSION} ${TAG}
+echo -e "[console_scripts]\nsalome=salome.kernel:main.run_salome" > salome.kernel-${VERSION}.dist-info/entry_points.txt
+cp -v ${SCRIPTPATH}/main.kernel.py salome/kernel/main.py
+zip -r salome.kernel-${VERSION}-${TAG}.whl *
+# auditwheel show salome.kernel-${VERSION}-${TAG}.whl
+auditwheel repair salome.kernel-${VERSION}-${TAG}.whl -w /io/wheelhouse/
 
 cd /tmp
-# pip install salome_omniorb --pre --no-index -f /io/wheelhouse
-# python -c "from omniORB import CORBA, PortableServer"
+rm -rf salome*
+unzip /io/wheelhouse/salome.kernel-${VERSION}-${TAG}.*.whl
 
-# pip install libbatch --pre --no-index -f /io/wheelhouse
-# python -c "import libbatch"
+# check ldd doesnt crash because of auditwheel --remove-rpath
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:salome.kernel.libs/ ldd salome/bin/salome/SALOME_Container
 
+# libwith_loggerTraceCollector.so is dynamically loaded, so keep the original name
+cp -v salome.kernel.libs/libwith_loggerTraceCollector-*.so salome.kernel.libs/libwith_loggerTraceCollector.so
+zip /io/wheelhouse/salome.kernel-${VERSION}-${TAG}.*.whl salome.kernel.libs/libwith_loggerTraceCollector.so
 
-# export LD_LIBRARY_PATH=/usr/local/lib/
-# export PYTHONPATH=/usr/local/lib/python3.10/site-packages
-# export KERNEL_ROOT_DIR=/tmp/kernel/build/install/usr/local
-
-# export LD_LIBRARY_PATH=/usr/local/lib/:/usr/local/lib/salome
-# export PYTHONPATH=/usr/local/bin/salome/:/usr/local/lib/salome/:/usr/local/lib/python3.10/site-packages
-# rm -r /usr/local/lib/python3.10/site-packages/salome
-# rm -r /usr/local/lib/salome
-# rm -r /usr/local/bin/salome
-
-# export SALOME_VERBOSE=1
-# export SALOME_VERBOSE_LEVEL=2
-# 
-# # ls -l /usr/local/lib/python3.10/site-packages
-# export LD_LIBRARY_PATH=/tmp/kernel/build/install/usr/local/lib/salome:/usr/local/lib
-# export PYTHONPATH=/usr/local/lib/python3.10/site-packages:/tmp/kernel/build/install/usr/local/lib/python3.10/site-packages
-# # export PATH=/tmp/kernel/build/install/usr/local/bin:/tmp/kernel/build/install/usr/local/bin/salome:$PATH
-# #/usr/local/lib/python3.10/site-packages:/usr/local/lib/python3.10/site-packages/salome
-# # ls -l /usr/local/bin
-# # ls -l /usr/local/bin/salome
-# 
-# # pip install salome_kernel --pre --no-index -f /io/wheelhouse
-# python -c "import salome"
-# python -c "import salome.kernel"
-# python -c "import salome; salome.salome_init()"
-
+# bootstrap
 cd /tmp
-git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/yacs.git
+git clone -b V9_14_0 --depth 1 https://github.com/SalomePlatform/salome_bootstrap.git
+cd salome_bootstrap
+cmake -DCONFIGURATION_ROOT_DIR=/tmp/configuration .
+make install
+# no wheel, this module is just needed at configuration time
+PYVERD2=`echo ${PYVERD}| sed "s|m||g"`
+cp -rv /usr/local/__SALOME_BOOTSTRAP__/SalomeOnDemandTK /opt/python-static/${PYTAG}-${ABI}/lib/python${PYVERD2}/site-packages
+
+# yacs
+cd /tmp
+git clone --depth 1 -b jsr/43708_pip https://github.com/jschueller/yacs.git
 cd yacs
-# dont explicitely link Python libs to swig modules
-sed -i "s|PYTHON_LIBRARIES|ZZZ|g" src/*_swig/CMakeLists.txt 
-git diff
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
+  -DSALOMEBOOTSTRAP_ROOT_DIR=/tmp/salome_bootstrap \
   -DKERNEL_ROOT_DIR=/usr/local \
   -DSALOME_BUILD_GUI=OFF \
   -DSALOME_CMAKE_DEBUG=ON \
-  -DSALOME_BUILD_TESTS=OFF -DSALOME_BUILD_DOC=OFF \
-  -DPYTHON_EXECUTABLE=/opt/python/${PYTAG}-${ABI}-static/bin/python \
-  -DPYTHON_INCLUDE_DIR=/opt/python/${PYTAG}-${ABI}-static/include/python${PYVERD} \
-  -DPYTHON_LIBRARY=/opt/python/${PYTAG}-${ABI}-static/lib/libpython${PYVERD}.a \
+  -DSALOME_BUILD_TESTS=ON -DSALOME_BUILD_DOC=OFF \
+  -DPYTHON_EXECUTABLE=/opt/python-static/${PYTAG}-${ABI}/bin/python \
+  -DPYTHON_INCLUDE_DIR=/opt/python-static/${PYTAG}-${ABI}/include/python${PYVERD} \
+  -DPYTHON_LIBRARY=/opt/python-static/${PYTAG}-${ABI}/lib/libpython${PYVERD}.a \
   -B build .
 cd build
-make install
+make install -j4
 
-make install DESTDIR=$PWD/install -j20
-cd $PWD/install/usr/local/lib/python*/site-packages/salome
+make install DESTDIR=$PWD/install -j1
+cp -rv $PWD/install/usr/local/{bin,share} $PWD/install/usr/local/lib/python*/site-packages/salome
+cd $PWD/install/usr/local/lib/python*/site-packages
 find . -name __pycache__ | xargs rm -r
-mkdir salome_yacs-${VERSION}.dist-info
-sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.yacs.in > salome_yacs-${VERSION}.dist-info/METADATA
-python ${SCRIPTPATH}/write_distinfo.py salome_yacs ${VERSION} ${TAG}
-zip -r salome_yacs-${VERSION}-${TAG}.whl *
-auditwheel show salome_yacs-${VERSION}-${TAG}.whl
-auditwheel repair salome_yacs-${VERSION}-${TAG}.whl -w /io/wheelhouse/
-
-# pip install salome_yacs --pre --no-index -f /io/wheelhouse
-# python -c "import evalyfx"
-# python -c "import evalyfx; session=evalyfx.YACSEvalSession()"
+mkdir salome.yacs-${VERSION}.dist-info
+sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.yacs.in > salome.yacs-${VERSION}.dist-info/METADATA
+python ${SCRIPTPATH}/write_distinfo.py salome.yacs ${VERSION} ${TAG}
+zip -r salome.yacs-${VERSION}-${TAG}.whl *
+# auditwheel show salome.yacs-${VERSION}-${TAG}.whl
+auditwheel repair salome.yacs-${VERSION}-${TAG}.whl -w /io/wheelhouse/
 
 cd /tmp
 git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/py2cpp.git
 cd py2cpp
 # dont explicitely link Python libs for Unix wheels
-sed -i "s|PYTHON_LIBRARIES|ZZZ|g" src/CMakeLists.txt
-
-# drop cppunit
-sed -i "/SalomeCppUnit/d" CMakeLists.txt
-sed -i "/Test/d" src/CMakeLists.txt
-
+sed -i "s|\${PYTHON_LIBRARIES}|dl pthread util|g" src/CMakeLists.txt
+# add link to libpython deps since we still have to link the test executables
+# sed -i "s|\${PYTHON_LIBRARIES}|\${PYTHON_LIBRARIES} dl pthread util|g" src/Test/CMakeLists.txt
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
   -DSALOME_CMAKE_DEBUG=ON \
-  -DSALOME_BUILD_TESTS=OFF -DSALOME_BUILD_DOC=OFF \
-  -DPYTHON_EXECUTABLE=/opt/python/${PYTAG}-${ABI}/bin/python \
-  -DPYTHON_INCLUDE_DIR=/opt/python/${PYTAG}-${ABI}/include/python${PYVERD} \
-  -DPYTHON_LIBRARY=dummy \
+  -DSALOME_BUILD_TESTS=ON -DSALOME_BUILD_DOC=OFF \
+  -DPYTHON_EXECUTABLE=/opt/python-static/${PYTAG}-${ABI}/bin/python \
+  -DPYTHON_INCLUDE_DIR=/opt/python-static/${PYTAG}-${ABI}/include/python${PYVERD} \
+  -DPYTHON_LIBRARY=/opt/python-static/${PYTAG}-${ABI}/lib/libpython${PYVERD}.a \
   -B build .
 cd build
 make install
 
 cd /tmp
-git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/ydefx.git
+git clone --depth 1 -b jsr/43708_pip https://github.com/jschueller/ydefx.git
 cd ydefx
-# disable tests
-sed -i "/ADD_SUBDIRECTORY(Test)/d" src/cpp/CMakeLists.txt
-git diff
+# add link to libpython deps since we still have to link the test executables
+# sed -i "s|${py2cpp_lib}|${py2cpp_lib} dl pthread util|g" src/cpp/Test/CMakeLists.txt
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
   -DKERNEL_ROOT_DIR=/usr/local \
   -DSALOME_CMAKE_DEBUG=ON \
-  -DSALOME_BUILD_TESTS=OFF -DSALOME_BUILD_DOC=OFF \
+  -DSALOME_BUILD_TESTS=ON -DSALOME_BUILD_DOC=OFF \
   -DYDEFX_BUILD_GUI=OFF \
-  -DPYTHON_EXECUTABLE=/opt/python/${PYTAG}-${ABI}-static/bin/python \
-  -DPYTHON_INCLUDE_DIR=/opt/python/${PYTAG}-${ABI}-static/include/python${PYVERD} \
-  -DPYTHON_LIBRARY=/opt/python/${PYTAG}-${ABI}-static/lib/libpython${PYVERD}.a \
+  -DPYTHON_EXECUTABLE=/opt/python-static/${PYTAG}-${ABI}/bin/python \
+  -DPYTHON_INCLUDE_DIR=/opt/python-static/${PYTAG}-${ABI}/include/python${PYVERD} \
+  -DPYTHON_LIBRARY=/opt/python-static/${PYTAG}-${ABI}/lib/libpython${PYVERD}.a \
   -B build .
 cd build
 make install
 
-make install DESTDIR=$PWD/install -j20
+make install DESTDIR=$PWD/install
+cp -rv $PWD/install/usr/local/bin $PWD/install/usr/local/lib/python*/site-packages/salome
+# different layout than kernel/yacs
 cd $PWD/install/usr/local/lib/python*/site-packages/salome
-mkdir salome_ydefx-${VERSION}.dist-info
-sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.ydefx.in > salome_ydefx-${VERSION}.dist-info/METADATA
-python ${SCRIPTPATH}/write_distinfo.py salome_ydefx ${VERSION} py3
-zip -r salome_ydefx-${VERSION}-py3.whl *
-# auditwheel show salome_ydefx-${VERSION}-py3.whl
-# auditwheel repair salome_ydefx-${VERSION}-py3.whl -w /io/wheelhouse/
-cp -v salome_ydefx-${VERSION}-py3.whl /io/wheelhouse/
+mkdir salome
+mv bin salome
+mkdir pydefx-${VERSION}.dist-info
+sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.pydefx.in > pydefx-${VERSION}.dist-info/METADATA
+NOARCH=py3-none-any
+python ${SCRIPTPATH}/write_distinfo.py pydefx ${VERSION} ${NOARCH}
+sed -i "s|Root-Is-Purelib: false|Root-Is-Purelib: true|g" pydefx-${VERSION}.dist-info/WHEEL
+zip -r pydefx-${VERSION}-${NOARCH}.whl *
+cp -v pydefx-${VERSION}-${NOARCH}.whl /io/wheelhouse/

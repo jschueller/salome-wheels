@@ -5,7 +5,7 @@ MAINTAINER jschueller
 ENV MAKEFLAGS -j8
 WORKDIR /usr/local/src
 
-RUN yum install -y zip tree openssl-devel libxml2-devel
+RUN yum install -y zip tree openssl-devel libxml2-devel chrpath perl-IPC-Cmd cppunit-devel openssh-server openssh-clients rsh rsh-server rsync gdb vim
 
 # swig
 RUN rm /usr/local/bin/swig*
@@ -21,7 +21,6 @@ RUN curl -fSsL https://archives.boost.io/release/1.81.0/source/boost_1_81_0.tar.
  && ./b2 -q variant=release address-model=64 architecture=x86 debug-symbols=off threading=multi runtime-link=shared link=shared toolset=gcc --layout=system ${MAKEFLAGS} install --with-serialization --with-filesystem --with-date_time --with-chrono --with-thread --with-regex --with-system  > /dev/null 2>&1 && cd - && rm -r boost*
 
 # openssl
-RUN yum install -y perl-IPC-Cmd
 RUN curl -fSsL https://www.openssl.org/source/openssl-3.3.0.tar.gz | tar xz && cd openssl* \
  && ./config no-shared -fPIC --prefix=/opt/ssl && make depend > /dev/null 2>&1 && make > /dev/null 2>&1 && make install_sw > /dev/null 2>&1
 
@@ -29,30 +28,25 @@ RUN curl -fSsL https://www.openssl.org/source/openssl-3.3.0.tar.gz | tar xz && c
 RUN curl -fSsL https://github.com/libffi/libffi/releases/download/v3.4.6/libffi-3.4.6.tar.gz | tar xz && cd libffi* \
  && CFLAGS="-fPIC" ./configure --disable-shared --disable-multi-os-directory --prefix=/opt/ffi && make > /dev/null 2>&1 && make install > /dev/null 2>&1 && cd - && rm -r libffi*
 
+ENV LD_LIBRARY_PATH=/usr/local/lib/
+ENV HOME=/root
+ENV USER=root
+
+# python (static)
 ADD build_static_python.sh /tmp
-RUN /tmp/build_static_python.sh 3.10.16
+RUN for pyver in 3.7.17 3.8.20 3.9.21 3.10.16 3.11.11; do /tmp/build_static_python.sh ${pyver}; done
 
-# temporary build of omniorb/libbatch
-ENV OMNIORB_VERSION=4.2.5
-ENV PATH=/opt/python/cp310-cp310/bin/:$PATH
+# libbatch
+ADD build_libbatch.sh /tmp/
+RUN for pyver in cp37m cp38 cp39 cp310 cp311; do /tmp/build_libbatch.sh ${pyver}; done
 
-RUN curl -L https://downloads.sourceforge.net/omniorb/omniORB-${OMNIORB_VERSION}.tar.bz2|tar xj && cd omniORB* && ./configure --with-openssl=/usr && make && make install
-RUN curl -L https://downloads.sourceforge.net/omniorb/omniORBpy/omniORBpy-${OMNIORB_VERSION}/omniORBpy-${OMNIORB_VERSION}.tar.bz2|tar xj && cd omniORBpy* && ./configure --with-omniorb=/usr/local && make && make install
-ENV LD_LIBRARY_PATH=/usr/local/lib/ PYTHONPATH=/usr/local/lib/python3.10/site-packages
-RUN python -c "from omniORB import CORBA, PortableServer"
+# omniorb
+ADD build_omniorb.sh /tmp/
+ADD omniorb-noinitfile.patch /tmp
+RUN for pyver in cp37m cp38 cp39 cp310 cp311; do /tmp/build_omniorb.sh ${pyver}; done
 
-ENV LIBBATCH_VERSION=2.5.0
-RUN git clone --depth 1 -b V`echo ${LIBBATCH_VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/libbatch.git && cd libbatch && sed -i "s|PYTHON_LIBRARIES|ZZZ|g" src/Python/CMakeLists.txt && cmake -LAH -DCMAKE_BUILD_TYPE=Release \
-  -DPYTHON_EXECUTABLE=/opt/python/cp312-cp312/bin/python \
-  -DPYTHON_INCLUDE_DIR=/opt/python/cp312-cp312/include/python3.12 -DPYTHON_LIBRARY=dummy \
-  -DLIBBATCH_CXX_STANDARD=17 \
-  -B build . && cd build && make install
-RUN python -c "import libbatch"
+# the patchelf --remove-rpath commands from auditwheel corrupts the executables (ldd crashes)
+RUN sed -i "/remove-rpath/d" /opt/_internal/pipx/venvs/auditwheel/lib/python*/site-packages/auditwheel/patcher.py
 
-# RUN cd /tmp && curl -fSsL https://www.python.org/ftp/python/3.10.16/Python-3.10.16.tgz | tar xz
-# RUN grep -nr   forkpty /tmp/Python-3.10.16|grep util
-# RUN grep -nr   openpty /tmp/Python-3.10.16|grep util
-# RUN cd /tmp/Python-3.10.16 && ./configure ac_cv_func_forkpty=no ac_cv_lib_util_forkpty=no ac_cv_lib_bsd_forkpty=no ac_cv_lib_util_openpty=no|grep openpty
-# RUN ldd /opt/python/cp312-cp312/bin/python
-
-# RUN /tmp/build_static_python.sh 3.10.16
+# fix python 3.7 location
+RUN ln -s /opt/python-static/cp37-cp37 /opt/python-static/cp37-cp37m

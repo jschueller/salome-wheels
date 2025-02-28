@@ -1,7 +1,7 @@
 Metadata-Version: 1.2
-Name: salome-yacs
+Name: salome.yacs
 Version: @PACKAGE_VERSION@
-Summary: general services of SALOME platform
+Summary: tool to manage simulations of SALOME platform
 Home-page: https://github.com/SalomePlatform/yacs
 Author: EDF R&D
 Author-email: eric.fayolle@edf.fr
@@ -14,7 +14,9 @@ Classifier: Programming Language :: C++
 Classifier: Programming Language :: Python :: 3
 Classifier: Topic :: Scientific/Engineering :: Physics
 Classifier: Intended Audience :: Science/Research
-Requires-Dist: salome-kernel
+Requires-Dist: salome.kernel
 
-Salome-yacs
+Salome.yacs
 ===========
+
+YACS is a tool for managing multidisciplinary simulations through calculation schemes. 

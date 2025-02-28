@@ -1,5 +1,5 @@
 Metadata-Version: 1.2
-Name: salome-kernel
+Name: salome.kernel
 Version: @PACKAGE_VERSION@
 Summary: general services of SALOME platform
 Home-page: https://github.com/SalomePlatform/kernel
@@ -16,6 +16,9 @@ Classifier: Topic :: Scientific/Engineering :: Physics
 Classifier: Intended Audience :: Science/Research
 Requires-Dist: numpy<2
 Requires-Dist: psutil<6
+Requires-Dist: salome-omniorb
 
-Salome-kernel
+Salome.kernel
 =============
+
+The KERNEL module implements general services of SALOME platform
