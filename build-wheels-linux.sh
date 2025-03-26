@@ -41,25 +41,25 @@ cp -rv $PWD/install/usr/local/{bin,share} $PWD/install/usr/local/lib/python*/sit
 cd $PWD/install/usr/local/lib/python*/site-packages
 find . -name __pycache__ | xargs rm -r
 
-mkdir salome.kernel-${VERSION}.dist-info
-sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.kernel.in > salome.kernel-${VERSION}.dist-info/METADATA
-python ${SCRIPTPATH}/write_distinfo.py salome.kernel ${VERSION} ${TAG}
-echo -e "[console_scripts]\nsalome=salome.kernel:main.run_salome" > salome.kernel-${VERSION}.dist-info/entry_points.txt
+mkdir salome_kernel-${VERSION}.dist-info
+sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.kernel.in > salome_kernel-${VERSION}.dist-info/METADATA
+python ${SCRIPTPATH}/write_distinfo.py salome_kernel ${VERSION} ${TAG}
+echo -e "[console_scripts]\nsalome=salome.kernel:main.run_salome" > salome_kernel-${VERSION}.dist-info/entry_points.txt
 cp -v ${SCRIPTPATH}/main.kernel.py salome/kernel/main.py
-zip -r salome.kernel-${VERSION}-${TAG}.whl *
-# auditwheel show salome.kernel-${VERSION}-${TAG}.whl
-auditwheel repair salome.kernel-${VERSION}-${TAG}.whl -w /io/wheelhouse/
+zip -r salome_kernel-${VERSION}-${TAG}.whl *
+# auditwheel show salome_kernel-${VERSION}-${TAG}.whl
+auditwheel repair salome_kernel-${VERSION}-${TAG}.whl -w /io/wheelhouse/
 
 cd /tmp
 rm -rf salome*
-unzip /io/wheelhouse/salome.kernel-${VERSION}-${TAG}.*.whl
+unzip /io/wheelhouse/salome_kernel-${VERSION}-${TAG}.*.whl
 
 # check ldd doesnt crash because of auditwheel --remove-rpath
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:salome.kernel.libs/ ldd salome/bin/salome/SALOME_Container
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:salome_kernel.libs/ ldd salome/bin/salome/SALOME_Container
 
 # libwith_loggerTraceCollector.so is dynamically loaded, so keep the original name
-cp -v salome.kernel.libs/libwith_loggerTraceCollector-*.so salome.kernel.libs/libwith_loggerTraceCollector.so
-zip /io/wheelhouse/salome.kernel-${VERSION}-${TAG}.*.whl salome.kernel.libs/libwith_loggerTraceCollector.so
+cp -v salome_kernel.libs/libwith_loggerTraceCollector-*.so salome_kernel.libs/libwith_loggerTraceCollector.so
+zip /io/wheelhouse/salome_kernel-${VERSION}-${TAG}.*.whl salome_kernel.libs/libwith_loggerTraceCollector.so
 
 # bootstrap
 cd /tmp
@@ -93,12 +93,12 @@ make install DESTDIR=$PWD/install -j1
 cp -rv $PWD/install/usr/local/{bin,share} $PWD/install/usr/local/lib/python*/site-packages/salome
 cd $PWD/install/usr/local/lib/python*/site-packages
 find . -name __pycache__ | xargs rm -r
-mkdir salome.yacs-${VERSION}.dist-info
-sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.yacs.in > salome.yacs-${VERSION}.dist-info/METADATA
-python ${SCRIPTPATH}/write_distinfo.py salome.yacs ${VERSION} ${TAG}
-zip -r salome.yacs-${VERSION}-${TAG}.whl *
-# auditwheel show salome.yacs-${VERSION}-${TAG}.whl
-auditwheel repair salome.yacs-${VERSION}-${TAG}.whl -w /io/wheelhouse/
+mkdir salome_yacs-${VERSION}.dist-info
+sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.yacs.in > salome_yacs-${VERSION}.dist-info/METADATA
+python ${SCRIPTPATH}/write_distinfo.py salome_yacs ${VERSION} ${TAG}
+zip -r salome_yacs-${VERSION}-${TAG}.whl *
+# auditwheel show salome_yacs-${VERSION}-${TAG}.whl
+auditwheel repair salome_yacs-${VERSION}-${TAG}.whl -w /io/wheelhouse/
 
 cd /tmp
 git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/py2cpp.git

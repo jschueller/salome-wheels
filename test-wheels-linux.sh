@@ -23,7 +23,8 @@ export USER=root
 
 cd /tmp
 
-pip install salome.kernel --pre -f /io/wheelhouse
+pip install "numpy<2" "psutil<6"
+pip install salome.kernel --pre --no-index -f /io/wheelhouse
 
 python -c "import salome.kernel"
 python -c "from salome.kernel import salome; salome.salome_init()"

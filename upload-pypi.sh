@@ -14,8 +14,8 @@ for ABI in cp37m cp38 cp39 cp310 cp311
 do
   twine upload -r ${REPO} wheelhouse/libbatch-${LIBBATCH_VERSION}-*-${ABI}-manylinux*.whl
   twine upload -r ${REPO} wheelhouse/salome_omniorb-${OMNIORB_VERSION}-*-${ABI}-manylinux*.whl
-  twine upload -r ${REPO} wheelhouse/salome.kernel-${SALOME_VERSION}-*-${ABI}-manylinux*.whl
-  twine upload -r ${REPO} wheelhouse/salome.yacs-${SALOME_VERSION}-*-${ABI}-manylinux*.whl
+  twine upload -r ${REPO} wheelhouse/salome_kernel-${SALOME_VERSION}-*-${ABI}-manylinux*.whl
+  twine upload -r ${REPO} wheelhouse/salome_yacs-${SALOME_VERSION}-*-${ABI}-manylinux*.whl
   twine upload -r ${REPO} wheelhouse/pydefx-${SALOME_VERSION}-py3-none-any.whl
 done
 
