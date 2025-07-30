@@ -10,7 +10,7 @@ SALOME_VERSION=9.14.0
 REPO=testpypi
 
 set -e
-for ABI in cp37m cp38 cp39 cp310 cp311
+for ABI in cp38 cp39 cp310 cp311
 do
   twine upload -r ${REPO} wheelhouse/libbatch-${LIBBATCH_VERSION}-*-${ABI}-manylinux*.whl
   twine upload -r ${REPO} wheelhouse/salome_omniorb-${OMNIORB_VERSION}-*-${ABI}-manylinux*.whl

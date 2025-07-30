@@ -34,19 +34,16 @@ ENV USER=root
 
 # python (static)
 ADD build_static_python.sh /tmp
-RUN for pyver in 3.7.17 3.8.20 3.9.21 3.10.16 3.11.11; do /tmp/build_static_python.sh ${pyver}; done
+RUN for pyver in 3.8.20 3.9.21 3.10.16 3.11.11; do /tmp/build_static_python.sh ${pyver}; done
 
 # libbatch
 ADD build_libbatch.sh /tmp/
-RUN for pyver in cp37m cp38 cp39 cp310 cp311; do /tmp/build_libbatch.sh ${pyver}; done
+RUN for pyver in cp38 cp39 cp310 cp311; do /tmp/build_libbatch.sh ${pyver}; done
 
 # omniorb
 ADD build_omniorb.sh /tmp/
 ADD omniorb-noinitfile.patch /tmp
-RUN for pyver in cp37m cp38 cp39 cp310 cp311; do /tmp/build_omniorb.sh ${pyver}; done
+RUN for pyver in cp38 cp39 cp310 cp311; do /tmp/build_omniorb.sh ${pyver}; done
 
 # the patchelf --remove-rpath commands from auditwheel corrupts the executables (ldd crashes)
 RUN sed -i "/remove-rpath/d" /opt/_internal/pipx/venvs/auditwheel/lib/python*/site-packages/auditwheel/patcher.py
-
-# fix python 3.7 location
-RUN ln -s /opt/python-static/cp37-cp37 /opt/python-static/cp37-cp37m
