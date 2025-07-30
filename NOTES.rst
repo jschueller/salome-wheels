@@ -43,7 +43,7 @@ Packaging Python de SALOME
   4. Idem pour PATH qui doit être mis à jour pour utiliser bin/salome après avoir copié le répertoire d'installation /bin dans salome/kernel.
 
   5. ABSOLUTE_APPLI_PATH pointe aussi vers la racine du sous-module salome/kernel, nécessaire pour les tests
-     Cependant la command test ne trouve pas les fichiers de tests qui sont installés dans le sous-répertoire kernel, cf fichier source bin/runTests.py::
+     Cependant la commande test ne trouve pas les fichiers de tests qui sont installés dans le sous-répertoire kernel, cf fichier source bin/runTests.py::
      
         # tests must be in ${ABSOLUTE_APPLI_PATH}/${__testSubDir}/
         -__testSubDir = "bin/salome/test"
@@ -77,21 +77,6 @@ Packaging Python de SALOME
   5. Des fichiers xml sont nécessaires à l'execution de tests et doivent etre copiés depuis share/yacssamples vers salome/bin/salome/test/yacs/yacsloader_swig/samples
   
   Les patches nécessaires sont disponibles dans la branche https://github.com/jschueller/yacs/tree/jsr/43708_pip basée sur agy/43708_pip.
-
-  6. Les tests suivants peuvent échouer de manière non reproductible suivant les réplications de la construction des binaires kernel et yacs::
-
-      The following tests FAILED:
-          7 - YACS_basic_first_SSL (Failed)                     YACS
-         12 - YACS_PyNodeWithCache_swig (Failed)                YACS
-         13 - YACS_WorkloadManager_swig (Failed)                YACS
-         17 - YACS_SaveLoadRun_swig (Failed)                    YACS
-         18 - YACS_ProxyTest_swig (Failed)                      YACS
-         19 - YACS_PerfTest0_swig (Failed)                      YACS
-         20 - YACS_Driver_Overrides (Failed)                    YACS
-         22 - YACS_Fixes_swig (Failed)                          YACS
-         24 - YACS_PyDecorator (Failed)                         YACS
-
-     Le test YACS_PyNodeWithCache_swig est charactéristique.
 
 - py2cpp
 
