@@ -26,6 +26,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/salome
 git clone --depth 1 -b jsr/43708_pip_exp https://github.com/jschueller/kernel.git
 cd kernel
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
   -DSALOME_CMAKE_DEBUG=ON -DSALOME_USE_64BIT_IDS=ON \
   -DSALOME_USE_LIBBATCH=ON -DSALOME_BUILD_TESTS=ON -DSALOME_BUILD_DOC=OFF \
@@ -65,7 +66,8 @@ zip /io/wheelhouse/salome_kernel-${VERSION}-${TAG}.*.whl salome_kernel.libs/libw
 cd /tmp
 git clone -b V9_14_0 --depth 1 https://github.com/SalomePlatform/salome_bootstrap.git
 cd salome_bootstrap
-cmake -DCONFIGURATION_ROOT_DIR=/tmp/configuration .
+sed -i "19iCMAKE_MINIMUM_REQUIRED(VERSION 3.0)" CMakeLists.txt
+cmake -DCONFIGURATION_ROOT_DIR=/tmp/configuration -DCMAKE_POLICY_VERSION_MINIMUM=3.5 .
 make install
 # no wheel, this module is just needed at configuration time
 PYVERD2=`echo ${PYVERD}| sed "s|m||g"`
@@ -76,6 +78,7 @@ cd /tmp
 git clone --depth 1 -b jsr/43708_pip https://github.com/jschueller/yacs.git
 cd yacs
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
   -DSALOMEBOOTSTRAP_ROOT_DIR=/tmp/salome_bootstrap \
   -DKERNEL_ROOT_DIR=/usr/local \
@@ -108,6 +111,7 @@ sed -i "s|\${PYTHON_LIBRARIES}|dl pthread util|g" src/CMakeLists.txt
 # add link to libpython deps since we still have to link the test executables
 # sed -i "s|\${PYTHON_LIBRARIES}|\${PYTHON_LIBRARIES} dl pthread util|g" src/Test/CMakeLists.txt
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
   -DSALOME_CMAKE_DEBUG=ON \
   -DSALOME_BUILD_TESTS=ON -DSALOME_BUILD_DOC=OFF \
@@ -124,6 +128,7 @@ cd ydefx
 # add link to libpython deps since we still have to link the test executables
 # sed -i "s|${py2cpp_lib}|${py2cpp_lib} dl pthread util|g" src/cpp/Test/CMakeLists.txt
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
   -DKERNEL_ROOT_DIR=/usr/local \
   -DSALOME_CMAKE_DEBUG=ON \
