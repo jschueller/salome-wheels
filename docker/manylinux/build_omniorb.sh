@@ -14,16 +14,16 @@ cd /tmp
 curl -L https://downloads.sourceforge.net/omniorb/omniORB-${OMNIORB_VERSION}.tar.bz2|tar xj
 cd omniORB*
 ./configure --with-openssl=/usr
-make
-make install
+make > /dev/null 2>&1
+make install > /dev/null 2>&1
 
 cd /tmp
 curl -L https://downloads.sourceforge.net/omniorb/omniORBpy/omniORBpy-${OMNIORB_VERSION}/omniORBpy-${OMNIORB_VERSION}.tar.bz2|tar xj
 cd omniORBpy*
 patch -p1 -i /tmp/omniorb-noinitfile.patch
 ./configure --with-omniorb=/usr/local
-make
-make install
+make > /dev/null 2>&1
+make install > /dev/null 2>&1
 
 PYTHONPATH=/usr/local/lib/python${PYVERD}/site-packages python -c "from omniORB import CORBA, PortableServer"
 

@@ -25,6 +25,8 @@ cd /tmp
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/salome
 git clone --depth 1 -b jsr/43708_pip_exp https://github.com/jschueller/kernel.git
 cd kernel
+# sed -i '102itarget_link_libraries(SalomeContainer "-Wl,--export-dynamic")' src/Container/CMakeLists.txt && git diff
+# sed -i '20iadd_link_options("-Wl,--export-dynamic")' src/Container/CMakeLists.txt && git diff
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
@@ -33,6 +35,8 @@ cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DPYTHON_EXECUTABLE=/opt/python-static/${PYTAG}-${ABI}/bin/python \
   -DPYTHON_INCLUDE_DIR=/opt/python-static/${PYTAG}-${ABI}/include/python${PYVERD} \
   -DPYTHON_LIBRARY=/opt/python-static/${PYTAG}-${ABI}/lib/libpython${PYVERD}.a \
+  -DCMAKE_SHARED_LINKER_FLAGS="-Wl,--export-dynamic" \
+  -DCMAKE_EXE_LINKER_FLAGS="-Wl,--export-dynamic" \
   -B build .
 cd build
 make install

@@ -10,6 +10,7 @@ ABI=${PYTAG}
 curl -fSsL https://www.python.org/ftp/python/${python_version}/Python-${python_version}.tgz | tar xz
 cd Python*
 CFLAGS="-fPIC" ./configure --disable-shared --with-static-libpython PKG_CONFIG_PATH=/opt/ffi/lib/pkgconfig/:/opt/ssl/lib64/pkgconfig/ LDFLAGS="-Wl,-rpath /usr/local/lib -L/opt/ssl/lib64 -L/opt/ffi/lib" --prefix=/opt/_internal/cpython-${python_version}-static
+cp /tmp/Setup.local Modules
 make > /dev/null 2>&1
 make install > /dev/null 2>&1
 cd -
