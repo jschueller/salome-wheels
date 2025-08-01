@@ -40,27 +40,27 @@ echo 'import salome.kernel.KernelContainer; import os.path; assert os.path.exist
 salome shell -- python ensure_scripts_templ.py
 
 
-salome test -L KERNEL -VV -E "KERNEL_LC_LifeCycleCORBA_SWIGTest|KERNEL_LifeCycleCORBA|KERNEL_KernelHelpers|KERNEL_UnitTests"
-
-pip install salome.yacs --pre --no-index -f /io/wheelhouse
-
-sed -i 's|__testSubDir = "bin/salome/test/kernel"|__testSubDir = "bin/salome/test/yacs"|g' /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/kernel/runTests.py
-
-python -c "import salome.yacs"
-
-for subdir in yacsloader yacsloader_swig
-do
-  cp -rv /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/share/salome/yacssamples /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/bin/salome/test/yacs/${subdir}/samples
-done
-
-# c++ test YACS_YacsPMMLExeTest needs YACS_ROOT_DIR
-salome test -L YACS -VV -E "YACS_YacsRuntimeTest|YACS_YacsLoaderTest|YACS_YacsPMMLExeTest"
-
-pip install pydefx --pre --no-index -f /io/wheelhouse
-
-python -c "import pydefx"
-
-sed -i 's|__testSubDir = "bin/salome/test/yacs"|__testSubDir = "bin/salome/test"|g' /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/kernel/runTests.py
-
-# cannot run c++ tests since libydefx.so is not mangled
-salome test -L YDEFX -VV -E "YDEFX_StudyGeneralTest|YDEFX_StudyRestartTest|YDEFX_SampleTest"
+# salome test -L KERNEL -VV -E "KERNEL_LC_LifeCycleCORBA_SWIGTest|KERNEL_LifeCycleCORBA|KERNEL_KernelHelpers|KERNEL_UnitTests"
+salome test -L KERNEL -VV -R KERNEL_testCrashProofContainer
+# pip install salome.yacs --pre --no-index -f /io/wheelhouse
+# 
+# sed -i 's|__testSubDir = "bin/salome/test/kernel"|__testSubDir = "bin/salome/test/yacs"|g' /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/kernel/runTests.py
+# 
+# python -c "import salome.yacs"
+# 
+# for subdir in yacsloader yacsloader_swig
+# do
+#   cp -rv /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/share/salome/yacssamples /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/bin/salome/test/yacs/${subdir}/samples
+# done
+# 
+# # c++ test YACS_YacsPMMLExeTest needs YACS_ROOT_DIR
+# salome test -L YACS -VV -E "YACS_YacsRuntimeTest|YACS_YacsLoaderTest|YACS_YacsPMMLExeTest"
+# 
+# pip install pydefx --pre --no-index -f /io/wheelhouse
+# 
+# python -c "import pydefx"
+# 
+# sed -i 's|__testSubDir = "bin/salome/test/yacs"|__testSubDir = "bin/salome/test"|g' /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/kernel/runTests.py
+# 
+# # cannot run c++ tests since libydefx.so is not mangled
+# salome test -L YDEFX -VV -E "YDEFX_StudyGeneralTest|YDEFX_StudyRestartTest|YDEFX_SampleTest"

@@ -8,4 +8,9 @@ cp -v omniorb/wheelhouse/*.whl wheelhouse
 abi=cp39
 docker run --rm -e MAKEFLAGS='-j8' -v `pwd`:/io salome/manylinux /io/build-wheels-linux.sh 9.14.0 ${abi}
 docker run --rm -v `pwd`:/io quay.io/pypa/manylinux2014_x86_64 /io/test-wheels-linux.sh 9.14.0 ${abi}
-docker run --rm -v `pwd`:/io debian:11 /io/test-wheels-debian.sh 9.14.0 ${abi}
+
+if test "${abi}" = "cp39"
+then
+  docker build docker/debian11 -t salome/debian11
+  docker run --rm -v `pwd`:/io salome/debian11 /io/test-wheels-debian.sh 9.14.0 cp39
+fi

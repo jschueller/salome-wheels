@@ -2,13 +2,15 @@
 
 # Modules that should always be present (POSIX and Windows):
 
-#_asyncio _asynciomodule.c
-#_bisect _bisectmodule.c
-#_contextvars _contextvarsmodule.c
+_asyncio _asynciomodule.c
+_bisect _bisectmodule.c
+_contextvars _contextvarsmodule.c
+_struct _struct.c
+_weakref _weakref.c    # basic weak reference support
 #_csv _csv.c
 _datetime _datetimemodule.c
 #_decimal _decimal/_decimal.c
-#_heapq _heapqmodule.c
+_heapq _heapqmodule.c
 _json _json.c
 #_lsprof _lsprof.c rotatingtree.c
 _multiprocessing -I$(srcdir)/Modules/_multiprocessing _multiprocessing/multiprocessing.c _multiprocessing/semaphore.c
@@ -18,16 +20,17 @@ _pickle _pickle.c
 _random _randommodule.c
 _socket socketmodule.c
 #_statistics _statisticsmodule.c
-#_struct _struct.c
 #_typing _typingmodule.c
-#_zoneinfo _zoneinfo.c
+_zoneinfo _zoneinfo.c
 array arraymodule.c
 #audioop audioop.c
-#binascii binascii.c
-#cmath cmathmodule.c
+binascii binascii.c
+cmath cmathmodule.c
 math mathmodule.c _math.c -DPy_BUILD_CORE_MODULE
 #mmap mmapmodule.c
 select selectmodule.c
+
+unicodedata unicodedata.c    # static Unicode character database
 
 # XML
 #_elementtree _elementtree.c
@@ -42,3 +45,5 @@ _sha512 sha512module.c
 _sha3 _sha3/sha3module.c
 
 _posixsubprocess _posixsubprocess.c  # POSIX subprocess module helper
+
+errno errnomodule.c

@@ -27,6 +27,9 @@ Packaging Python de SALOME
      qui vérifient la cohérence entre l'interpreteur et les bibliothèques qui étaient détectés séparement
      par les modules FindPythonInterp/FindPythonLibs et qui sont maintenant obsolètes.
 
+  2. On positionne correctement les variables LIBBATCH_*_COMMAND pour cp/mkdir/rm/sh
+     pour éviter les problèmes de chemin inexistant des commandes entre Centos et Debian.
+
 - kernel: 
 
   1. Sous Linux les modules Python binaires ne doivent pas être liés explicitement à la libpython: https://peps.python.org/pep-0513/#libpythonx-y-so-1on

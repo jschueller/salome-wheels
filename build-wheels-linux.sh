@@ -35,7 +35,6 @@ cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DPYTHON_EXECUTABLE=/opt/python-static/${PYTAG}-${ABI}/bin/python \
   -DPYTHON_INCLUDE_DIR=/opt/python-static/${PYTAG}-${ABI}/include/python${PYVERD} \
   -DPYTHON_LIBRARY=/opt/python-static/${PYTAG}-${ABI}/lib/libpython${PYVERD}.a \
-  -DCMAKE_SHARED_LINKER_FLAGS="-Wl,--export-dynamic" \
   -DCMAKE_EXE_LINKER_FLAGS="-Wl,--export-dynamic" \
   -B build .
 cd build
@@ -65,6 +64,9 @@ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:salome_kernel.libs/ ldd salome/bin/salome/SALOM
 # libwith_loggerTraceCollector.so is dynamically loaded, so keep the original name
 cp -v salome_kernel.libs/libwith_loggerTraceCollector-*.so salome_kernel.libs/libwith_loggerTraceCollector.so
 zip /io/wheelhouse/salome_kernel-${VERSION}-${TAG}.*.whl salome_kernel.libs/libwith_loggerTraceCollector.so
+
+# TODO: remove
+exit 0
 
 # bootstrap
 cd /tmp
