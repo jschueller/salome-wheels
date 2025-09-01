@@ -17,6 +17,10 @@ cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DPYTHON_EXECUTABLE=/opt/python/${PYTAG}-${ABI}/bin/python \
   -DPYTHON_INCLUDE_DIR=/opt/python/${PYTAG}-${ABI}/include/python${PYVERD} -DPYTHON_LIBRARY=dummy \
   -DLIBBATCH_CXX_STANDARD=17 \
+  -DLIBBATCH_RM_COMMAND=/bin/rm \
+  -DLIBBATCH_SH_COMMAND=/bin/sh \
+  -DLIBBATCH_CP_COMMAND=/bin/cp \
+  -DLIBBATCH_MKDIR_COMMAND=/bin/mkdir \
   -B build .
 cd build
 make install

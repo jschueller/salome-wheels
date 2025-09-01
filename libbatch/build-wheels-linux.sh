@@ -24,11 +24,17 @@ ls -l /opt/python/${PYTAG}-${ABI}
 git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/libbatch.git
 cd libbatch
 sed -i "s|\${PYTHON_LIBRARIES}||g" src/Python/CMakeLists.txt
-cmake -LAH -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PWD/install \
+cmake -LAH -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$PWD/install \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DPYTHON_EXECUTABLE=/opt/python/${PYTAG}-${ABI}/bin/python \
   -DPYTHON_INCLUDE_DIR=/opt/python/${PYTAG}-${ABI}/include/python${PYVERD} -DPYTHON_LIBRARY=dummy \
   -DLIBBATCH_CXX_STANDARD=17 \
   -DCMAKE_INSTALL_RPATH="${PWD}/install/lib" -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
+  -DLIBBATCH_RM_COMMAND=/bin/rm \
+  -DLIBBATCH_SH_COMMAND=/bin/sh \
+  -DLIBBATCH_CP_COMMAND=/bin/cp \
+  -DLIBBATCH_MKDIR_COMMAND=/bin/mkdir \
   -B build .
 make install -C build
 cd install/lib/python*/site-packages
