@@ -38,6 +38,7 @@ Packaging Python de SALOME
   2. Les executables SALOME_Container et co utilisent des symboles Python, on est donc obligés de lier explicitement à libpython
      au moins pour ces binaires là, et pour cela on recompile une version statique de Python.
      En conséquence il faut aussi explicitement lier à la dépendance de Python libutil pour les symboles forkpty/openpty.
+     Il faut aussi compiler les modules de la bibliothèque standard Python en statique (via le fichier de configuration Modules/Setup).
 
   3. La variable d'environnement KERNEL_ROOT_DIR est utilisée pour donner le chemin vers les catalogues xml.
      Pour la wheel on peut copier tout ce qui est installé dans /share vers le repertoire racine de la wheel

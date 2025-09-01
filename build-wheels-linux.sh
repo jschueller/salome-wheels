@@ -107,7 +107,7 @@ cd /tmp
 git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/py2cpp.git
 cd py2cpp
 # dont explicitely link Python libs for Unix wheels
-sed -i "s|\${PYTHON_LIBRARIES}|dl pthread util|g" src/CMakeLists.txt
+sed -i "s|\${PYTHON_LIBRARIES}|dl pthread util z|g" src/CMakeLists.txt
 # add link to libpython deps since we still have to link the test executables
 # sed -i "s|\${PYTHON_LIBRARIES}|\${PYTHON_LIBRARIES} dl pthread util|g" src/Test/CMakeLists.txt
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
