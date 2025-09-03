@@ -63,7 +63,9 @@ Packaging Python de SALOME
 
   9. Les variables d'environnement HOME et USER sont obligatoires, sinon salome_init plante; on suggère de tester la présence de ces variables.
 
-  10. Il faut ajouter un point d'entrée (via le fichier entry_points.txt) vers l'executable (Python) salome utilisé pour `salome shell` par exemple.
+  10. Il faut ajouter un point d'entrée (via le fichier entry_points.txt) vers l'executable salome (en Python) utilisé pour `salome shell` par exemple.
+
+  11. Les tests KERNEL_Launcher ont besoin du lien symbolique python->python3 qui n'est pas installé par défaut sur Debian.
 
   Les patches nécessaires sont disponibles dans la branche https://github.com/jschueller/kernel/tree/jsr/43708_pip_exp basée sur agy/43708_pip_exp.
 

@@ -32,6 +32,4 @@ ln -s pip3 pip
 mkdir -p /opt/python-static/
 ln -sv /opt/_internal/cpython-${python_version}-static /opt/python-static/${PYTAG}-${ABI}
 
-ls /opt/python-static/${PYTAG}-${ABI}/lib/libpython*.a
-
 find /opt/python-static/${PYTAG}-${ABI}/ -name "*.so"

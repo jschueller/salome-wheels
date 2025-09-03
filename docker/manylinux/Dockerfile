@@ -47,3 +47,4 @@ RUN for pyver in cp38 cp39 cp310 cp311; do /tmp/build_omniorb.sh ${pyver}; done
 
 # the patchelf --remove-rpath commands from auditwheel corrupts the executables (ldd crashes)
 RUN sed -i "/remove-rpath/d" /opt/_internal/pipx/venvs/auditwheel/lib/python*/site-packages/auditwheel/patcher.py
+RUN rm /usr/bin/python

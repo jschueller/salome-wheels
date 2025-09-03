@@ -15,6 +15,7 @@ PYVERD=`echo ${PYVERD}| sed "s|m||g"`
 
 SCRIPT=`readlink -f "$0"`
 SCRIPTPATH=`dirname "$SCRIPT"`
+SP_DIR=/opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages
 export PATH=/opt/python/${PYTAG}-${ABI}/bin/:$PATH
 
 # required by kernel
@@ -32,7 +33,7 @@ python -c "from salome.kernel import salome; salome.salome_init()"
 which salome
 salome shell -- env
 salome shell -- which SALOME_Container
-salome shell -- ldd /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/bin/salome/SALOME_Container
+salome shell -- ldd ${SP_DIR}/salome/bin/salome/SALOME_Container
 
 export SALOME_VERBOSE=1
 
@@ -44,13 +45,13 @@ salome test -L KERNEL -VV -E "KERNEL_LC_LifeCycleCORBA_SWIGTest|KERNEL_LifeCycle
 
 pip install salome.yacs --pre --no-index -f /io/wheelhouse
 
-sed -i 's|__testSubDir = "bin/salome/test/kernel"|__testSubDir = "bin/salome/test/yacs"|g' /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/kernel/runTests.py
+sed -i 's|__testSubDir = "bin/salome/test/kernel"|__testSubDir = "bin/salome/test/yacs"|g' ${SP_DIR}/salome/kernel/runTests.py
 
 python -c "import salome.yacs"
 
 for subdir in yacsloader yacsloader_swig
 do
-  cp -rv /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/share/salome/yacssamples /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/bin/salome/test/yacs/${subdir}/samples
+  cp -rv ${SP_DIR}/salome/share/salome/yacssamples ${SP_DIR}/salome/bin/salome/test/yacs/${subdir}/samples
 done
 
 # c++ test YACS_YacsPMMLExeTest needs YACS_ROOT_DIR
@@ -60,7 +61,7 @@ pip install pydefx --pre --no-index -f /io/wheelhouse
 
 python -c "import pydefx"
 
-sed -i 's|__testSubDir = "bin/salome/test/yacs"|__testSubDir = "bin/salome/test"|g' /opt/python/${PYTAG}-${ABI}/lib/python${PYVERD}/site-packages/salome/kernel/runTests.py
+sed -i 's|__testSubDir = "bin/salome/test/yacs"|__testSubDir = "bin/salome/test"|g' ${SP_DIR}/salome/kernel/runTests.py
 
 # cannot run c++ tests since libydefx.so is not mangled
 salome test -L YDEFX -VV -E "YDEFX_StudyGeneralTest|YDEFX_StudyRestartTest|YDEFX_SampleTest"
