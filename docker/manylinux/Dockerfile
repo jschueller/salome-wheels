@@ -43,6 +43,9 @@ RUN for pyver in cp38 cp39 cp310 cp311; do /tmp/build_libbatch.sh ${pyver}; done
 # omniorb
 ADD build_omniorb.sh /tmp/
 ADD omniorb-noinitfile.patch /tmp
+# wget https://downloads.sourceforge.net/omniorb/omniORB-4.2.5.tar.bz2
+# wget https://downloads.sourceforge.net/omniorb/omniORBpy/omniORBpy-4.2.5/omniORBpy-4.2.5.tar.bz2
+COPY omniORB-4.2.5.tar.bz2 omniORBpy-4.2.5.tar.bz2 /tmp/
 RUN for pyver in cp38 cp39 cp310 cp311; do /tmp/build_omniorb.sh ${pyver}; done
 
 # the patchelf --remove-rpath commands from auditwheel corrupts the executables (ldd crashes)
