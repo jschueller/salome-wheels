@@ -69,6 +69,26 @@ Packaging Python de SALOME
 
   Les patches nécessaires sont disponibles dans la branche https://github.com/jschueller/kernel/tree/jsr/43708_pip_exp basée sur agy/43708_pip_exp.
 
+  12. On rajoute à l'environnement du conteneur Salome (bin/appli/001.py.in) les chemins Python renvoyés par site.getsitepackages
+      afin que le chemin d'installation des wheels soit inclus dans le sys.path sous Debian 12::
+
+         for path in site.getsitepackages():
+             context.addToPythonPath(path)
+
+      Sinon le chemin (~/.local/lib/python3.11/site-packages ou /usr/local/lib/python3.11/dist-packages en root)
+      est manquant pour une raison inconnue bien que présent si on affiche le sys.path depuis l'interpreteur Python lancé avec le shell salome.
+      À noter .
+
+  99. Exemple de lancement à la main de test conteneur::
+
+      docker build docker/debian12 -t salome/debian12
+      docker run -it --rm -v `pwd`:/io salome/debian12 bash
+      pip install salome.kernel --pre --no-index -f /io/wheelhouse
+      salome shell
+      python /usr/local/lib/python3.11/dist-packages/salome/bin/salome/test/kernel/Launcher/testCrashProofContainer.py
+      cat /tmp/9598569_/0-569.sh
+      mkdir -p /root && cd /root; SALOME_Container_No_NS_Serv_OutProcess container_crash_test IOR:01000000...09010100
+
 - yacs:
 
   1. Idem on évite de lier les modules SWIG à libpython (ne pas appliquer car cela ne fonctionnera pas sous mac/windows).
@@ -81,7 +101,7 @@ Packaging Python de SALOME
      Les imports sont changés en import salome.yacs.PMML
 
   5. Des fichiers xml sont nécessaires à l'execution de tests et doivent etre copiés depuis share/yacssamples vers salome/bin/salome/test/yacs/yacsloader_swig/samples
-  
+
   Les patches nécessaires sont disponibles dans la branche https://github.com/jschueller/yacs/tree/jsr/43708_pip basée sur agy/43708_pip.
 
 - py2cpp

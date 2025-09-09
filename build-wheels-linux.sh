@@ -104,7 +104,7 @@ zip -r salome_yacs-${VERSION}-${TAG}.whl *
 auditwheel repair salome_yacs-${VERSION}-${TAG}.whl -w /io/wheelhouse/
 
 cd /tmp
-git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/py2cpp.git
+git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"|sed "s|_post[0-9]||g"` https://github.com/SalomePlatform/py2cpp.git
 cd py2cpp
 # dont explicitely link Python libs for Unix wheels
 sed -i "s|\${PYTHON_LIBRARIES}|dl pthread util z|g" src/CMakeLists.txt

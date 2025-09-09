@@ -21,7 +21,7 @@ cd /tmp
 # libbatch
 ls -l /opt/python/${PYTAG}-${ABI}
 
-git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"` https://github.com/SalomePlatform/libbatch.git
+git clone --depth 1 -b V`echo ${VERSION}|sed "s|\.|_|g"|sed "s|_post[0-9]||g"` https://github.com/SalomePlatform/libbatch.git
 cd libbatch
 sed -i "s|\${PYTHON_LIBRARIES}||g" src/Python/CMakeLists.txt
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
