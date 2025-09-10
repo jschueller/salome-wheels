@@ -80,13 +80,13 @@ Packaging Python de SALOME
 
   99. Exemple de lancement à la main de test conteneur::
 
-      docker build docker/debian12 -t salome/debian12
-      docker run -it --rm -v `pwd`:/io salome/debian12 bash
-      pip install salome.kernel --pre --no-index -f /io/wheelhouse
-      salome shell
-      python /usr/local/lib/python3.11/dist-packages/salome/bin/salome/test/kernel/Launcher/testCrashProofContainer.py
-      cat /tmp/9598569_/0-569.sh
-      mkdir -p /root && cd /root; SALOME_Container_No_NS_Serv_OutProcess container_crash_test IOR:01000000...09010100
+         docker build docker/debian12 -t salome/debian12
+         docker run -it --rm -v `pwd`:/io salome/debian12 bash
+         pip install salome.kernel --pre --no-index -f /io/wheelhouse
+         salome shell
+         python /usr/local/lib/python3.11/dist-packages/salome/bin/salome/test/kernel/Launcher/testCrashProofContainer.py
+         cat /tmp/9598569_/0-569.sh
+         mkdir -p /root && cd /root; SALOME_Container_No_NS_Serv_OutProcess container_crash_test IOR:01000000...09010100
 
 - yacs:
 
