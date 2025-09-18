@@ -39,6 +39,7 @@ make install
 make install DESTDIR=$PWD/install
 # we need to copy /share for xml stuff, /bin for executables, the patched kernel/__init__.py set the corresponding env variables
 cp -rv $PWD/install/usr/local/{bin,share} $PWD/install/usr/local/lib/python*/site-packages/salome
+cp -rv $PWD/install/usr/local/share $PWD/install/usr/local/lib/python*/site-packages/salome/kernel
 cd $PWD/install/usr/local/lib/python*/site-packages
 find . -name __pycache__ | xargs rm -r
 
