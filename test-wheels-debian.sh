@@ -2,10 +2,11 @@
 
 set -e -x
 
-test $# = 2 || exit 1
+test $# -ge 2 || exit 1
 
 VERSION="$1"
 ABI="$2"
+TEST_LIGHT="$3"
 
 #PLATFORM=manylinux2014_x86_64
 #PYTAG=${ABI/m/}
@@ -36,8 +37,12 @@ export SALOME_VERBOSE=1
 echo 'import salome.kernel.KernelContainer; import os.path; assert os.path.exists(salome.kernel.KernelContainer.getDftLocOfScripts())' > ensure_scripts_templ.py
 salome shell -- python ensure_scripts_templ.py
 
-
-salome test -L KERNEL -VV -E "KERNEL_LC_LifeCycleCORBA_SWIGTest|KERNEL_LifeCycleCORBA|KERNEL_KernelHelpers|KERNEL_UnitTests"
+if test -n "${TEST_LIGHT}"
+then
+  salome test -L KERNEL -VV -R KERNEL_testCrashProofContainer
+else
+  salome test -L KERNEL -VV -E "KERNEL_LC_LifeCycleCORBA_SWIGTest|KERNEL_LifeCycleCORBA|KERNEL_KernelHelpers|KERNEL_UnitTests"
+fi
 
 pip install salome.yacs --pre --no-index -f /io/wheelhouse
 
@@ -50,8 +55,13 @@ do
   cp -rv ${SP_DIR}/salome/share/salome/yacssamples ${SP_DIR}/salome/bin/salome/test/yacs/${subdir}/samples
 done
 
-# c++ test YACS_YacsPMMLExeTest needs YACS_ROOT_DIR
-salome test -L YACS -VV -E "YACS_YacsRuntimeTest|YACS_YacsLoaderTest|YACS_YacsPMMLExeTest"
+if test -n "${TEST_LIGHT}"
+then
+  salome test -L YACS -VV -R YACS_PyDecorator
+else
+  # c++ test YACS_YacsPMMLExeTest needs YACS_ROOT_DIR
+  salome test -L YACS -VV -E "YACS_YacsRuntimeTest|YACS_YacsLoaderTest|YACS_YacsPMMLExeTest"
+fi
 
 pip install pydefx --pre --no-index -f /io/wheelhouse
 
@@ -59,5 +69,14 @@ python -c "import pydefx"
 
 sed -i 's|__testSubDir = "bin/salome/test/yacs"|__testSubDir = "bin/salome/test"|g' ${SP_DIR}/salome/kernel/runTests.py
 
-# cannot run c++ tests since libydefx.so is not mangled
-salome test -L YDEFX -VV -E "YDEFX_StudyGeneralTest|YDEFX_StudyRestartTest|YDEFX_SampleTest"
+if test -n "${TEST_LIGHT}"
+then
+  salome test -L YDEFX -VV -R YDEFX_PyExampleTest
+else
+  # cannot run c++ tests since libydefx.so is not mangled
+  salome test -L YDEFX -VV -E "YDEFX_StudyGeneralTest|YDEFX_StudyRestartTest|YDEFX_SampleTest"
+fi
+
+# test outside salome shell
+cd ${SP_DIR}/salome/bin/salome/test/pyexample
+${SP_DIR}/salome/bin/salome/test/pyexample/runUnitTest.sh

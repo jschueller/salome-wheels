@@ -78,6 +78,8 @@ Packaging Python de SALOME
       Sinon le chemin (~/.local/lib/python3.11/site-packages ou /usr/local/lib/python3.11/dist-packages en root)
       est manquant pour une raison inconnue bien que présent si on affiche le sys.path depuis l'interpreteur Python lancé avec le shell salome.
 
+  13. On positionne la variable APPLI depuis le fichier kernel/__init__.py
+
   99. Exemple de lancement à la main de test conteneur::
 
          docker build docker/debian12 -t salome/debian12

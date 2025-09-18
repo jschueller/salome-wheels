@@ -6,8 +6,8 @@ cp -v libbatch/wheelhouse/*.whl wheelhouse
 cp -v omniorb/wheelhouse/*.whl wheelhouse
 # cp38 cp39 cp310 cp311
 abi=cp39
-VERSION=9.14.0.post1
-docker run --rm -e MAKEFLAGS='-j8' -v `pwd`:/io salome/manylinux /io/build-wheels-linux.sh ${VERSION} ${abi}
+VERSION=9.14.0.post2
+docker run --rm -e MAKEFLAGS='-j16' -v `pwd`:/io salome/manylinux /io/build-wheels-linux.sh ${VERSION} ${abi}
 docker run --rm -v `pwd`:/io quay.io/pypa/manylinux2014_x86_64 /io/test-wheels-linux.sh ${VERSION} ${abi}
 
 if test "${abi}" = "cp38"
