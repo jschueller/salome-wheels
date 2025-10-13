@@ -78,6 +78,7 @@ cp -rv /usr/local/__SALOME_BOOTSTRAP__/SalomeOnDemandTK /opt/python-static/${PYT
 cd /tmp
 git clone --depth 1 -b jsr/43708_pip https://github.com/jschueller/yacs.git
 cd yacs
+sed -i "/err_py2yacs_invalid/d" ./src/py2yacs/Test/{CMakeLists.txt,Py2yacsTest.cxx}  # yields SyntaxWarning
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
