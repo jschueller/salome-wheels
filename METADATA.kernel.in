@@ -17,6 +17,7 @@ Classifier: Intended Audience :: Science/Research
 Requires-Dist: numpy<2
 Requires-Dist: psutil<6
 Requires-Dist: salome-omniorb
+Requires-Dist: packaging
 
 Salome.kernel
 =============
