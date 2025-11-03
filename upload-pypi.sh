@@ -4,10 +4,10 @@
 
 LIBBATCH_VERSION=2.5.0
 OMNIORB_VERSION=4.2.5
-SALOME_VERSION=9.14.0
+SALOME_VERSION=9.14.0.post3
 
 # assumes a [testpypi] section in your .pypirc
-REPO=testpypi
+REPO=pypi
 
 set -e
 for ABI in cp38 cp39 cp310 cp311
