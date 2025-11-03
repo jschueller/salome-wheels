@@ -38,7 +38,8 @@ salome shell -- ldd ${SP_DIR}/salome/bin/salome/SALOME_Container
 
 export SALOME_VERBOSE=1
 
-echo 'import salome.kernel.KernelContainer; import os.path; assert os.path.exists(salome.kernel.KernelContainer.getDftLocOfScripts())' > ensure_scripts_templ.py
+echo 'import salome.kernel.KernelContainer; print(salome.kernel.KernelContainer.getDftLocOfScripts())' > ensure_scripts_templ.py
+echo 'import os; assert os.path.exists(salome.kernel.KernelContainer.getDftLocOfScripts())' >> ensure_scripts_templ.py
 salome shell -- python ensure_scripts_templ.py
 
 if test -n "${TEST_LIGHT}"
