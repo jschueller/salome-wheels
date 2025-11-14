@@ -1,0 +1,13 @@
+services:
+  master:
+    hostname: master
+    build: master
+    volumes:
+      - appdata:/appdata
+  worker:
+    hostname: worker
+    build: worker
+    volumes:
+      - appdata:/appdata
+volumes:
+  appdata:

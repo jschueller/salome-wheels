@@ -45,9 +45,9 @@ find . -name __pycache__ | xargs rm -r
 
 mkdir salome_kernel-${VERSION}.dist-info
 sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.kernel.in > salome_kernel-${VERSION}.dist-info/METADATA
-python ${SCRIPTPATH}/write_distinfo.py salome_kernel ${VERSION} ${TAG}
 echo -e "[console_scripts]\nsalome=salome.kernel:main.run_salome" > salome_kernel-${VERSION}.dist-info/entry_points.txt
 cp -v ${SCRIPTPATH}/main.kernel.py salome/kernel/main.py
+python ${SCRIPTPATH}/write_distinfo.py salome_kernel ${VERSION} ${TAG}
 zip -r salome_kernel-${VERSION}-${TAG}.whl *
 # auditwheel show salome_kernel-${VERSION}-${TAG}.whl
 auditwheel repair salome_kernel-${VERSION}-${TAG}.whl -w /io/wheelhouse/
@@ -92,7 +92,7 @@ cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DPYTHON_LIBRARY=/opt/python-static/${PYTAG}-${ABI}/lib/libpython${PYVERD}.a \
   -B build .
 cd build
-make install -j4
+make install
 
 make install DESTDIR=$PWD/install -j1
 cp -rv $PWD/install/usr/local/{bin,share} $PWD/install/usr/local/lib/python*/site-packages/salome
@@ -100,6 +100,8 @@ cd $PWD/install/usr/local/lib/python*/site-packages
 find . -name __pycache__ | xargs rm -r
 mkdir salome_yacs-${VERSION}.dist-info
 sed "s|@PACKAGE_VERSION@|${VERSION}|g" ${SCRIPTPATH}/METADATA.yacs.in > salome_yacs-${VERSION}.dist-info/METADATA
+echo -e "[console_scripts]\ndriver=salome.yacs:main.run_driver" > salome_yacs-${VERSION}.dist-info/entry_points.txt
+cp -v ${SCRIPTPATH}/main.yacs.py salome/yacs/main.py
 python ${SCRIPTPATH}/write_distinfo.py salome_yacs ${VERSION} ${TAG}
 zip -r salome_yacs-${VERSION}-${TAG}.whl *
 # auditwheel show salome_yacs-${VERSION}-${TAG}.whl

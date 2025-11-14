@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='iso-8859-1' ?>
+<proc name="PerfTest0">
+   <property name="executor" value="workloadmanager"/>
+   <type name="bool" kind="bool"/>
+   <type name="double" kind="double"/>
+   <objref name="file" id="file"/>
+   <type name="int" kind="int"/>
+   <objref name="pyobj" id="python:obj:1.0"/>
+   <sequence name="list[pyobj]" content="pyobj"/>
+   <sequence name="seqdouble" content="double"/>
+   <sequence name="seqseqdouble" content="seqdouble"/>
+   <sequence name="seqseqseqdouble" content="seqseqdouble"/>
+   <type name="string" kind="string"/>
+   <container name="DefaultContainer">
+      <property name="container_kind" value="Salome"/>
+      <property name="attached_on_cloning" value="0"/>
+      <property name="container_name" value="FactoryServer"/>
+      <property name="name" value="localhost"/>
+   </container>
+   <container name="gg">
+      <property name="container_kind" value="Salome"/>
+      <property name="attached_on_cloning" value="1"/>
+      <property name="container_name" value="gg"/>
+      <property name="nb_parallel_procs" value="1"/>
+      <property name="type" value="multi"/>
+   </container>
+   <inline name="start">
+      <script><code><![CDATA[o2 = list(range(100))]]></code></script>
+      <outport name="o2" type="list[pyobj]"/>
+   </inline>
+   <foreachdyn name="fe" loopWeight="-1" type="pyobj">
+      <remote name="internalNode" elementaryWeight="-1">
+         <script><code><![CDATA[from salome.kernel import KernelBasis
+KernelBasis.HeatMarcel(20,1)
+ret = 3*ppp
+]]></code></script>
+         <load container="gg"/>
+         <inport name="ppp" type="pyobj"/>
+         <outport name="ret" type="pyobj"/>
+      </remote>
+   </foreachdyn>
+   <inline name="end">
+      <script><code><![CDATA[ozeret = izeret]]></code></script>
+      <inport name="izeret" type="list[pyobj]"/>
+      <outport name="ozeret" type="list[pyobj]"/>
+   </inline>
+   <control> <fromnode>start</fromnode> <tonode>fe</tonode> </control>
+   <control> <fromnode>fe</fromnode> <tonode>end</tonode> </control>
+   <datalink control="false">
+      <fromnode>start</fromnode> <fromport>o2</fromport>
+      <tonode>fe</tonode> <toport>SmplsCollection</toport>
+   </datalink>
+   <datalink control="false">
+      <fromnode>fe</fromnode> <fromport>evalSamples</fromport>
+      <tonode>fe.internalNode</tonode> <toport>ppp</toport>
+   </datalink>
+   <datalink control="false">
+      <fromnode>fe.internalNode</fromnode> <fromport>ret</fromport>
+      <tonode>end</tonode> <toport>izeret</toport>
+   </datalink>
+</proc>
