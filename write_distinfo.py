@@ -1,34 +1,35 @@
 #!/usr/bin/env python
 
-import os
 import hashlib
-import base64
+from base64 import urlsafe_b64encode
 import sys
+from pathlib import Path
 
 if len(sys.argv) != 4:
     raise ValueError("no name/version/tag")
 name, version, tag = sys.argv[1:]
 
-
-path = os.path.join(f"{name}-{version}.dist-info", "WHEEL")
-with open(path, "w") as wheel:
+bdist_dir = Path(".")
+path = bdist_dir / f"{name}-{version}.dist-info" / "WHEEL"
+with path.open("w") as wheel:
     wheel.write("Wheel-Version: 1.0\n")
     wheel.write("Generator: custom\n")
     wheel.write("Root-Is-Purelib: false\n")
     wheel.write(f"Tag: {tag}\n")
 
-path = os.path.join(f"{name}-{version}.dist-info", "RECORD")
-with open(path, "w") as record:
-    for root, dirs, files in os.walk("."):
-        for fn in files:
-            fpath = os.path.join(root, fn)
-            if os.path.isfile(fpath):
-                if fn == "RECORD":
-                    record.write(f"{fpath},,\n")
-                else:
-                    data = open(fpath, "rb").read()
-                    digest = hashlib.sha256(data).digest()
-                    checksum = base64.urlsafe_b64encode(digest).decode()
-                    size = len(data)
-                    record.write(f"{fpath},sha256={checksum},{size}\n")
-
+path = bdist_dir / f"{name}-{version}.dist-info" / "RECORD"
+with path.open("w") as record:
+    for path in bdist_dir.rglob("*"):
+        relative_path = path.relative_to(bdist_dir)
+        if path.is_file():
+            if path.name == "RECORD":
+                hash_ = ""
+                size = ""
+            else:
+                data = path.open("rb").read()
+                digest = hashlib.sha256(data).digest()
+                sha256 = urlsafe_b64encode(digest).rstrip(b"=").decode("ascii")
+                hash_ = f"sha256={sha256}"
+                size = f"{len(data)}"
+            record_path_ = relative_path.as_posix()
+            record.write(f"{record_path_},{hash_},{size}\n")
