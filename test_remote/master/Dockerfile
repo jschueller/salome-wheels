@@ -1,6 +1,6 @@
 FROM debian:11
 RUN apt-get update -y && apt-get install openssh-client python3-pip iputils-ping sudo -y
-RUN pip install pydefx==9.14.0.post5 openturns medcoupling
+RUN pip install pydefx==9.14.0.post6 openturns medcoupling
 
 ADD testProxy.py /tmp/
 ADD testYacs.py /tmp/
