@@ -61,6 +61,9 @@ LD_LIBRARY_PATH=$LD_LIBRARY_PATH:salome_kernel.libs/ ldd salome/bin/salome/SALOM
 
 # libwith_loggerTraceCollector.so is dynamically loaded, so keep the original name
 cp -v salome_kernel.libs/libwith_loggerTraceCollector-*.so salome_kernel.libs/libwith_loggerTraceCollector.so
+unzip -p /io/wheelhouse/salome_kernel-${VERSION}-${TAG}.*.whl salome_kernel-${VERSION}.dist-info/RECORD > salome_kernel-${VERSION}.dist-info/RECORD
+echo "salome_kernel.libs/libwith_loggerTraceCollector.so,," >> salome_kernel-${VERSION}.dist-info/RECORD
+zip /io/wheelhouse/salome_kernel-${VERSION}-${TAG}.*.whl salome_kernel-${VERSION}.dist-info/RECORD
 zip /io/wheelhouse/salome_kernel-${VERSION}-${TAG}.*.whl salome_kernel.libs/libwith_loggerTraceCollector.so
 
 # bootstrap

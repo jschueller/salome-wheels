@@ -12,7 +12,7 @@ docker build docker/manylinux -t salome/manylinux
 mkdir -p wheelhouse
 cp -v libbatch/wheelhouse/*.whl wheelhouse
 cp -v omniorb/wheelhouse/*.whl wheelhouse
-VERSION=9.14.0.post6
+VERSION=9.14.0.post7
 docker run --rm -e MAKEFLAGS='-j16' -v `pwd`:/io salome/manylinux /io/build-wheels-linux.sh ${VERSION} ${abi}
 docker run --rm -v `pwd`:/io quay.io/pypa/manylinux2014_x86_64 /io/test-wheels-linux.sh ${VERSION} ${abi} light
 

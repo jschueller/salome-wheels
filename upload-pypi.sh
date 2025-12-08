@@ -4,7 +4,7 @@
 
 LIBBATCH_VERSION=2.5.0
 OMNIORB_VERSION=4.2.5
-SALOME_VERSION=9.14.0.post6
+SALOME_VERSION=9.14.0.post7
 
 # assumes a [testpypi] section in your .pypirc
 REPO=pypi
