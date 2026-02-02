@@ -25,6 +25,8 @@ cd /tmp
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/salome
 git clone --depth 1 -b jsr/43708_pip_exp https://github.com/jschueller/kernel.git
 cd kernel
+# need to link to Python's static libexpat
+sed -i "s|\${PYTHON_LIBRARIES}|\${PYTHON_LIBRARIES} /opt/python-static/${PYTAG}-${ABI}/lib/libexpat.a|g" src/*/CMakeLists.txt
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
@@ -117,6 +119,8 @@ cd py2cpp
 sed -i "s|\${PYTHON_LIBRARIES}|dl pthread util z|g" src/CMakeLists.txt
 # add link to libpython deps since we still have to link the test executables
 # sed -i "s|\${PYTHON_LIBRARIES}|\${PYTHON_LIBRARIES} dl pthread util|g" src/Test/CMakeLists.txt
+# need to link to Python's static libexpat
+sed -i "s|\${PYTHON_LIBRARIES}|\${PYTHON_LIBRARIES} /opt/python-static/${PYTAG}-${ABI}/lib/libexpat.a|g" src/Test/CMakeLists.txt
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \
@@ -134,6 +138,9 @@ git clone --depth 1 -b jsr/43708_pip https://github.com/jschueller/ydefx.git
 cd ydefx
 # add link to libpython deps since we still have to link the test executables
 # sed -i "s|${py2cpp_lib}|${py2cpp_lib} dl pthread util|g" src/cpp/Test/CMakeLists.txt
+# need to link to Python's static libexpat
+sed -i "s|\${PYTHON_LIBRARIES}|\${PYTHON_LIBRARIES} /opt/python-static/${PYTAG}-${ABI}/lib/libexpat.a|g" src/cpp/CMakeLists.txt
+git diff
 cmake -LAH -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DCONFIGURATION_ROOT_DIR=/tmp/configuration \

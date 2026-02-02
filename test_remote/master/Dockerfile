@@ -9,6 +9,7 @@ ADD yacs_config.json /tmp/
 ADD yacs_driver_overrides.py /tmp/
 ADD testYacsComplex.py /tmp/
 ADD testYdefx.py /tmp/
+ADD testYacsComplex2.py /tmp/
 
 ADD entrypoint.sh /tmp/entrypoint.sh
 ENTRYPOINT ["/tmp/entrypoint.sh"]

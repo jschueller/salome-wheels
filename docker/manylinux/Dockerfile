@@ -1,6 +1,6 @@
 FROM quay.io/pypa/manylinux2014_x86_64
 
-ENV MAKEFLAGS -j8
+ENV MAKEFLAGS=-j8
 WORKDIR /usr/local/src
 
 RUN yum install -y zip tree openssl-devel libxml2-devel chrpath perl-IPC-Cmd cppunit-devel openssh-server openssh-clients rsh rsh-server rsync gdb vim
@@ -11,7 +11,7 @@ RUN curl  -fSsL https://github.com/swig/swig/archive/v4.0.2.tar.gz | tar xz && c
  && ./autogen.sh && ./configure --without-alllang && make > /dev/null 2>&1 && make install > /dev/null 2>&1 && swig -version && cd - && rm -r swig*
 
 # hdf5
-RUN curl -fsSL https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.3/src/hdf5-1.10.3.tar.bz2 | tar xj && cd hdf5-1.10.3 && ./configure --enable-cxx --prefix=/usr/local --disable-tests --disable-tools && make > /dev/null 2>&1 && make install > /dev/null 2>&1 && cd - && rm -r hdf5*
+RUN curl -fsSL https://github.com/HDFGroup/hdf5/releases/download/hdf5_1.14.6/hdf5-1.14.6.tar.gz | tar xz && cd hdf5* && ./configure --enable-cxx --prefix=/usr/local --disable-tests --disable-tools --disable-static && make > /dev/null 2>&1 && make install > /dev/null 2>&1 && cd - && rm -r hdf5*
 
 # boost
 RUN curl -fSsL https://archives.boost.io/release/1.81.0/source/boost_1_81_0.tar.bz2 | tar xj && cd boost_1_81_0 \
@@ -41,9 +41,6 @@ RUN for pyver in cp38 cp39 cp310 cp311; do /tmp/build_libbatch.sh ${pyver}; done
 # omniorb
 ADD build_omniorb.sh /tmp/
 ADD omniorb-noinitfile.patch /tmp
-# wget https://downloads.sourceforge.net/omniorb/omniORB-4.2.5.tar.bz2
-# wget https://downloads.sourceforge.net/omniorb/omniORBpy/omniORBpy-4.2.5/omniORBpy-4.2.5.tar.bz2
-COPY omniORB-4.2.5.tar.bz2 omniORBpy-4.2.5.tar.bz2 /tmp/
 RUN for pyver in cp38 cp39 cp310 cp311; do /tmp/build_omniorb.sh ${pyver}; done
 
 # the patchelf --remove-rpath commands from auditwheel corrupts the executables (ldd crashes)

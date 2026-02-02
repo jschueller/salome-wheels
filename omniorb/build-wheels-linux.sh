@@ -19,7 +19,7 @@ export PATH=/opt/python/${PYTAG}-${ABI}/bin/:$PATH
 cd /tmp
 
 # omniorb
-curl -L https://downloads.sourceforge.net/omniorb/omniORB-${VERSION}.tar.bz2|tar xj
+curl -fsSL https://downloads.sourceforge.net/omniorb/omniORB-${VERSION}.tar.bz2 | tar xj
 cd omniORB*
 ./configure --with-openssl=/usr
 make
@@ -28,7 +28,7 @@ make install DESTDIR=/tmp/omniorb_install
 cd -
 
 # omniorbpy
-curl -L https://downloads.sourceforge.net/omniorb/omniORBpy/omniORBpy-${VERSION}/omniORBpy-${VERSION}.tar.bz2|tar xj
+curl -fsSL https://downloads.sourceforge.net/omniorb/omniORBpy/omniORBpy-${VERSION}/omniORBpy-${VERSION}.tar.bz2 | tar xj
 cd omniORBpy*
 patch -p1 -i ${SCRIPTPATH}/omniorb-noinitfile.patch
 ./configure --with-omniorb=/usr/local

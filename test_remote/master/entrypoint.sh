@@ -33,8 +33,11 @@ python3 /tmp/testYacs.py
 cd /tmp
 driver --options_from_json=yacs_config.json --activate-custom-overrides PerfTest0.xml
 
-# 4. Test YACS DOE + more complex objects
+# 4. Test YACS DOE + np.array
 python3 /tmp/testYacsComplex.py
 
-# 5. Test YDEFX
+# 5. Test YACS DOE + OT objects
+python3 /tmp/testYacsComplex2.py
+
+# 6. Test YDEFX
 python3 /tmp/testYdefx.py
