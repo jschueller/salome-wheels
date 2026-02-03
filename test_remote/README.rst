@@ -39,3 +39,9 @@ Remarques:
   (on suppose the le noeud distant utilise lui aussi les wheels installées à un emplacement identique)
 - les points d'entrée utilisés pour le shell de kernel et du driver yacs constituent peut-être
   une logique différente de ce qui est prévu dans salome à base de fichier .py d'environnement cumulés
+- les wheels salome doivent être compilés avec une version compatible de hdf5 pour charger OT (1.14.6)
+- il n'est pas possible de charger une fonction OpenTURNS Python (ot.PythonFunction) à travers idefx car cela nécessite
+  que la definition de la partie pur Python de la fonction soit disponible dans l'environnement Python
+  ce qui n'est pas le cas au moment du rechargement de la fonction sur le noeud (le contexte de la fonction idefx est seulement un script).
+  Ce n'est pas un problème pour multiprocessing par exemple.
+  Par contre cela fonctionne avec une fonction OT non-Python par exemple ot.SymbolicFunction.
